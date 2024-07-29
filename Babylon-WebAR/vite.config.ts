@@ -6,6 +6,6 @@ import comlink from 'vite-plugin-comlink'
 export default defineConfig({
   plugins: [react(),comlink()],
   worker: {
-    plugins: () => [comlink()]
+    plugins: () => {return [comlink()]}
   }
 })

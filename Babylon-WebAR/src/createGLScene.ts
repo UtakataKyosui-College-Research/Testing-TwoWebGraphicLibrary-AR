@@ -1,6 +1,5 @@
 import * as Babylon from "babylonjs"
-export default async function createGLScene(){
-    const canvas = document.getElementById("webgl") as HTMLCanvasElement
+export default async function createGLScene(canvas: OffscreenCanvas){
     const engine = new Babylon.Engine(canvas)
 
     const scene = new Babylon.Scene(engine);

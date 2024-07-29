@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react"
-import { Remote } from "comlink"
+import {  Remote } from "comlink"
 
 function App() {
   const ButtonRef = useRef<HTMLButtonElement | null>(null)
@@ -10,16 +10,20 @@ function App() {
 
   useEffect(() => {
     workerRef.current = new ComlinkWorker<typeof import("./worker")>(
-      new URL("./worker",import.meta.url)
+      new URL("./worker",import.meta.url),
+      {
+        type: "module",
+      }
     )
+    workerRef.current
   },[])
 
   async function AsignAR(event: React.SyntheticEvent) {
     event.preventDefault()
     ButtonRef.current!.disabled = true
     if(workerRef.current){
-      await workerRef.current.WebGLSphereMultiGen(render_num)
-      await workerRef.current.WebGPUSphereMultiGen(render_num)
+      await workerRef.current.WebGLSphereMultiGen(render_num,(document.getElementById("webgl") as HTMLCanvasElement).transferControlToOffscreen())
+      await workerRef.current.WebGPUSphereMultiGen(render_num,(document.getElementById("webgpu") as HTMLCanvasElement).transferControlToOffscreen())
     } 
   }
   

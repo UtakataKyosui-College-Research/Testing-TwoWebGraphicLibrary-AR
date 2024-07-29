@@ -1,6 +1,5 @@
 import * as Babylon from "babylonjs"
-export default async function createGPUScene(){
-    const canvas = document.getElementById("webgpu") as HTMLCanvasElement
+export default async function createGPUScene(canvas: OffscreenCanvas){
     const engine = new Babylon.WebGPUEngine(canvas)
     await engine.initAsync()
 

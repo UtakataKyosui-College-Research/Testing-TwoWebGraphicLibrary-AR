@@ -4,9 +4,9 @@ import SphereRender from "./SphereRender"
 import createGLScene from "./createGLScene"
 import createGPUScene from "./createGPUScene"
 
-export const WebGPUSphereMultiGen = (num:number) => {
+export const WebGPUSphereMultiGen = (num:number,canvas: OffscreenCanvas) => {
     let results = 0
-    createGPUScene().then(({engine,scene}) => {
+    createGPUScene(canvas).then(({engine,scene}) => {
         for(let i = 0; i < num;i++){
             const time = SphereRender({scene,position: new Babylon.Vector3(2 + i,5,0)})
             results += time
@@ -18,9 +18,9 @@ export const WebGPUSphereMultiGen = (num:number) => {
     })
 }
 
-export const WebGLSphereMultiGen = (num:number) => {
+export const WebGLSphereMultiGen = (num:number,canvas: OffscreenCanvas) => {
     let results = 0
-    createGLScene().then(({engine,scene}) => {
+    createGLScene(canvas).then(({engine,scene}) => {
         for(let i = 0; i < num;i++){
             const time = SphereRender({scene,position: new Babylon.Vector3(2 + i,5,0)})
             results += time
