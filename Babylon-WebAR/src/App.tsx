@@ -1,29 +1,26 @@
-import * as Babylon from "babylonjs"
-import { useRef } from "react"
-import createScene from "./createGLScene"
-import SphereRender from "./SphereRender"
-import Decimal from "decimal.js"
+import { useEffect, useRef } from "react"
+import { Remote } from "comlink"
 
 function App() {
   const ButtonRef = useRef<HTMLButtonElement | null>(null)
   // const [ar,setAr] = useState(false)
   const render_num = 50
-  let results: number = 0
 
-  function AsignAR(event: React.SyntheticEvent) {
+  const workerRef = useRef<Remote<typeof import("./worker")> | null>(null)
+
+  useEffect(() => {
+    workerRef.current = new ComlinkWorker<typeof import("./worker")>(
+      new URL("./worker",import.meta.url)
+    )
+  },[])
+
+  async function AsignAR(event: React.SyntheticEvent) {
     event.preventDefault()
     ButtonRef.current!.disabled = true
-    
-    createScene().then(({engine,scene}) => {
-      for(let i = 0; i < render_num;i++){
-        const time = SphereRender({scene,position: new Babylon.Vector3(2 + i,5,0)})
-        results += time
-      }
-      engine.runRenderLoop(() => {
-        scene.render()
-      })
-      console.log(`${render_num}個のスフィアをレンダリングする際、一個あたり`,new Decimal(`${results}`).div(`${render_num}`).toNumber(),"秒かかりました")
-    })
+    if(workerRef.current){
+      await workerRef.current.WebGLSphereMultiGen(render_num)
+      await workerRef.current.WebGPUSphereMultiGen(render_num)
+    } 
   }
   
   return (
@@ -37,7 +34,7 @@ function App() {
         style={{
           border: "1px solid black",
           borderRadius: "15px",
-          width: "100%",
+          width: "render_num%",
           height: "90vh",
           overflow: "hidden"
         }}
@@ -51,7 +48,7 @@ function App() {
         style={{
           border: "1px solid black",
           borderRadius: "15px",
-          width: "100%",
+          width: "render_num%",
           height: "90vh",
           overflow: "hidden"
         }}
